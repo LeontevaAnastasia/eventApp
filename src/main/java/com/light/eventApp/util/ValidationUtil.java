@@ -1,5 +1,7 @@
 package com.light.eventApp.util;
 
+import com.light.eventApp.HasId;
+import com.light.eventApp.util.exception.IllegalRequestDataException;
 import com.light.eventApp.util.exception.NotFoundException;
 import lombok.experimental.UtilityClass;
 
@@ -34,6 +36,20 @@ public class ValidationUtil {
 
     public static <T> T checkNotFoundWithId(Optional<T> optional, String msg) {
         return optional.orElseThrow(() -> new NotFoundException(msg));
+    }
+
+    public static void checkNew(HasId bean) {
+        if (!bean.isNew()) {
+            throw new IllegalRequestDataException(bean.getClass().getSimpleName() + " must be new (id=null)");
+        }
+    }
+
+    public static void assureIdConsistent(HasId bean, Long id) {
+        if (bean.isNew()) {
+            bean.setId(id);
+        } else if (bean.id() != id) {
+            throw new IllegalRequestDataException(bean.getClass().getSimpleName() + " must be with id=" + id);
+        }
     }
 
 }
