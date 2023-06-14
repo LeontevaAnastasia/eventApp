@@ -8,7 +8,7 @@ public interface HasId {
 
     void setId(Long id);
 
-
+    @JsonIgnore
     default boolean isNew() {
         return getId() == null;
     }

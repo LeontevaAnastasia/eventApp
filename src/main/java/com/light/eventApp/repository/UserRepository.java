@@ -20,7 +20,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> getUserById(Long id);
 
     @Modifying
-    @org.springframework.transaction.annotation.Transactional
+    @Transactional
     @Query("delete from User u where u.id=:id")
     Long delete(@Param("id") Long id);
 }

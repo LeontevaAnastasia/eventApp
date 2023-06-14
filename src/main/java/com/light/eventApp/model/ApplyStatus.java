@@ -1,5 +1,6 @@
 package com.light.eventApp.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -18,16 +19,19 @@ public class ApplyStatus {
     @EmbeddedId
     UserEvent id;
 
-    @ManyToOne
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("userId")
     @JoinColumn(name = "user_id")
     User user;
 
-    @ManyToOne
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("eventId")
     @JoinColumn(name = "event_id")
     Event event;
 
-    @Column(name="status")
+    @Enumerated(value = EnumType.STRING)
+    @Column(name="status", columnDefinition = "APPLY")
     CurrentStatus currentStatus;
 }

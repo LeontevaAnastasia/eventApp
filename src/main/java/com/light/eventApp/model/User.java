@@ -1,5 +1,6 @@
 package com.light.eventApp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
@@ -58,16 +59,18 @@ public class User extends AbstractBaseEntity {
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Role> roles;
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Contract> contractsSet;
 
+    @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "creator")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Event> createdEvents;
 
-
-    @OneToMany(mappedBy = "user")
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "user")
     @OnDelete(action = OnDeleteAction.CASCADE)
     Set<ApplyStatus> statuses;
 

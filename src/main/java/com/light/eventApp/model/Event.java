@@ -1,9 +1,7 @@
 package com.light.eventApp.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
@@ -17,6 +15,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@ToString
 @Entity
 @Table(name = "events")
 public class Event extends AbstractBaseEntity {
@@ -40,11 +39,14 @@ public class Event extends AbstractBaseEntity {
     @NotNull
     private LocalDate created;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JsonBackReference
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "creator", nullable = false)
+   // @JsonBackReference
     private User creator;
 
-    @OneToMany(mappedBy = "event")
+    @JsonBackReference
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "event")
     Set<ApplyStatus> statuses;
 
 

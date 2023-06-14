@@ -1,5 +1,6 @@
 package com.light.eventApp.web.user;
 
+import com.light.eventApp.AuthorizedUser;
 import com.light.eventApp.model.User;
 import com.light.eventApp.service.UserService;
 import com.light.eventApp.to.UserTo;
@@ -39,19 +40,19 @@ public class ProfileRestController {
     }
 
     @GetMapping()
-    public User get( User user) {
-        return userService.get(user.getId());
+    public User get(@AuthenticationPrincipal AuthorizedUser authUser) {
+        return userService.get(authUser.getId());
     }
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void delete( User user) {
-        userService.delete(user.getId());
+    public void delete(@AuthenticationPrincipal AuthorizedUser authUser) {
+        userService.delete(authUser.getId());
     }
 
     @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@Valid @RequestBody UserTo userTo, User user) {
-        assureIdConsistent(userTo, user.getId());
+    public void update(@Valid @RequestBody UserTo userTo, @AuthenticationPrincipal AuthorizedUser authUser) {
+        assureIdConsistent(userTo, authUser.getId());
         userService.update(userTo);
     }
 }
