@@ -6,6 +6,7 @@ import com.light.eventApp.repository.ContractRepository;
 import com.light.eventApp.repository.EventRepository;
 import com.light.eventApp.repository.UserRepository;
 import com.light.eventApp.util.exception.IncorrectCreateException;
+import com.light.eventApp.util.exception.IncorrectUpdateException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -27,7 +28,7 @@ public class EventService {
     public Event create(Event event, Long userId) {
         //проверить заключен ли договор
         LocalDate currentDate = LocalDate.now();
-        Optional<Contract> contract = contractRepository.getContractById(userId, currentDate);
+        Optional<Contract> contract = contractRepository.getContractByUserId(userId, currentDate);
         if (contract.isPresent()) {
             return saveEvent(event, userId);
         } else throw new IncorrectCreateException("No valid contract");
@@ -51,7 +52,17 @@ public class EventService {
     public void applyForEvent(Long id, Long userId) {
         checkNotFoundWithId(eventRepository.getById(id), id);
         checkNotFoundWithId(userRepository.getUserById(userId), userId);
-        applyStatusRepository.saveApplying(id, userId);
+        applyStatusRepository.save(id, userId, CurrentStatus.APPLY);
+    }
+
+    public void processEventApplying (Long id, Long userId, String status) {
+
+        ApplyStatus applyStatus = checkNotFoundWithId(applyStatusRepository.getById(userId, id), id);
+        if (!(applyStatus.getCurrentStatus().equals(CurrentStatus.APPLY))) {
+            throw new IncorrectUpdateException();
+        } else {
+            applyStatusRepository.save(userId,id, CurrentStatus.valueOf(status));
+        }
     }
 
 
