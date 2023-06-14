@@ -25,8 +25,13 @@ public class UserUtil {
         return new User(null, userTo.getName(), userTo.getEmail(), userTo.getPassword(), userTo.getAge(), LocalDate.now(), true, roleSet);
     }
 
-    public static User prepareToSave(User user) {
+    public static User prepareToSave(User user, PasswordEncoder passwordEncoder) {
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setEmail(user.getEmail());
         return user;
+    }
+
+    public static UserTo asTo(User user) {
+        return new UserTo(user.getId(), user.getName(), user.getEmail(), user.getPassword(), user.getAge());
     }
 }

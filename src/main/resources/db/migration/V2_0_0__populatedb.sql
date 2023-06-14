@@ -5,6 +5,10 @@ DELETE FROM contracts;
 DELETE FROM users;
 ALTER SEQUENCE global_seq RESTART WITH 100000;
 
+ALTER TABLE user_event drop column status;
+
+ALTER TABLE user_event add column status VARCHAR NOT NULL;
+
 INSERT INTO users (name, email, password, age)
 VALUES ('User', 'user@gmail.com', 'password', 27),
        ('User2', 'user2@gmail.com', 'password', 30),

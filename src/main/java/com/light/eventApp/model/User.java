@@ -1,5 +1,6 @@
 package com.light.eventApp.model;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -34,6 +35,7 @@ public class User extends AbstractBaseEntity {
     @Column(name = "password")
     @Size(min = 4, max = 100)
     @NotEmpty
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
     @Column(name = "age")

@@ -7,6 +7,7 @@ import com.light.eventApp.to.UserTo;
 import com.light.eventApp.util.exception.IncorrectUpdateException;
 import com.light.eventApp.util.exception.NotFoundException;
 import lombok.AllArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,7 @@ import static com.light.eventApp.util.ValidationUtil.checkNotFoundWithId;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
 
     public User create(User user) {
@@ -85,7 +87,7 @@ public class UserService {
     }
 
     private User prepareAndSave(User user) {
-        return userRepository.save(prepareToSave(user));
+        return userRepository.save(prepareToSave(user, passwordEncoder));
     }
 
 

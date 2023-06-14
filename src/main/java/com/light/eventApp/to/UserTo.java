@@ -33,4 +33,12 @@ public class UserTo extends AbstractBaseTo{
     @Size(min = 14, max = 100)
     private int age;
 
+
+    public UserTo(Long id, String name, String email, String password, int age) {
+        super(id);
+        this.name = name;
+        this.email = email;
+        this.password = password;
+        this.age=age;
+    }
 }
