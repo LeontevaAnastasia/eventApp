@@ -1,6 +1,5 @@
 package com.light.eventApp.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.light.eventApp.HasId;
 import lombok.*;
 

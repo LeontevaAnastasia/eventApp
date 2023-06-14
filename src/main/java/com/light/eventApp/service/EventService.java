@@ -25,7 +25,6 @@ public class EventService {
     private final ContractRepository contractRepository;
     private final ApplyStatusRepository applyStatusRepository;
 
-    //for admin
     public Event create(Event event, Long userId) {
         //проверить заключен ли договор
         LocalDate currentDate = LocalDate.now();
@@ -42,30 +41,32 @@ public class EventService {
         event.setCreator(checkNotFoundWithId(userRepository.getUserById(userId),userId));
         return eventRepository.save(event);
     }
-
-     //
+    //for admin and principal
     public Event get(Long id) {
         return checkNotFoundWithId(eventRepository.getById(id), id);
     }
 
 
 
-//for user
-    public void applyForEvent(Long id, Long userId) {
-        checkNotFoundWithId(eventRepository.getById(id), id);
+    public void applyForEvent(Long userId, Long id ) {
         checkNotFoundWithId(userRepository.getUserById(userId), userId);
-        applyStatusRepository.save(id, userId, CurrentStatus.APPLY);
+        checkNotFoundWithId(eventRepository.getById(id), id);
+        if (applyStatusRepository.getById(userId, id).isPresent()) {
+            throw new IncorrectCreateException("You already have applied for this event");
+        } else {
+            applyStatusRepository.save(userId, id, CurrentStatus.APPLY.toString());
+        }
     }
 
 
-    //for principal
+    //for admin
     public void processEventApplying (Long id, Long userId, String status) {
 
         ApplyStatus applyStatus = checkNotFoundWithId(applyStatusRepository.getById(userId, id), id);
         if (!(applyStatus.getCurrentStatus().equals(CurrentStatus.APPLY))) {
             throw new IncorrectUpdateException();
         } else {
-            applyStatusRepository.save(userId,id, CurrentStatus.valueOf(status));
+            applyStatusRepository.save(userId,id, status);
         }
     }
 

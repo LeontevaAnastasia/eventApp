@@ -16,7 +16,7 @@ public interface ApplyStatusRepository extends JpaRepository<ApplyStatus, UserEv
 
     @Modifying
     @Query(value = "insert into user_event (user_id, event_id, status) VALUES (:userId,:id,:status)", nativeQuery = true)
-    void save(@Param("userId") Long userId, @Param("id") Long id, @Param("status")CurrentStatus status);
+    void save(@Param("userId") Long userId, @Param("id") Long id, @Param("status")String status);
 
     @Query("select a from ApplyStatus a where a.id.userId=:userId and a.id.eventId=:eventId")
     Optional<ApplyStatus> getById(@Param("userId") Long userId, @Param("eventId") Long eventId);

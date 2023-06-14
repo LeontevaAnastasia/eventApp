@@ -1,8 +1,8 @@
 package com.light.eventApp.web.event;
 
 import com.light.eventApp.model.Event;
-import com.light.eventApp.repository.EventRepository;
 import com.light.eventApp.service.EventService;
+import com.light.eventApp.util.SecurityUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,6 +20,14 @@ public class EventRestControllerForUser {
     @GetMapping
     public List<Event> getAll() {
         return eventService.getAll();
+    }
+
+    @PostMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void applyForEvent(@PathVariable Long id){
+        Long userId = SecurityUtil.authUserId();
+        eventService.applyForEvent(userId, id);
+
     }
 
 

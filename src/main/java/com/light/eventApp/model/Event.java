@@ -22,7 +22,7 @@ public class Event extends AbstractBaseEntity {
 
     @Column(name = "header")
     @NotBlank
-    @Size(min=1, max = 50)
+    @Size(min = 1, max = 50)
     private String header;
 
     @Column(name = "description")
@@ -42,12 +42,21 @@ public class Event extends AbstractBaseEntity {
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "creator", nullable = false)
-   // @JsonBackReference
+    // @JsonBackReference
     private User creator;
 
     @JsonBackReference
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "event")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "event")
     Set<ApplyStatus> statuses;
 
 
+    public Event(Long id, String header, String description, double price, LocalDateTime dateTime, LocalDate created, User creator) {
+        super(id);
+        this.header = header;
+        this.description = description;
+        this.price = price;
+        this.dateTime = dateTime;
+        this.created=created;
+        this.creator = creator;
+    }
 }
