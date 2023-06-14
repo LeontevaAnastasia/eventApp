@@ -3,7 +3,7 @@ DROP TABLE if exists user_event;
 DROP TABLE if exists events;
 DROP TABLE if exists contracts;
 DROP TABLE if exists users;
-DROP SEQUENCE global_seq;
+DROP SEQUENCE if exists global_seq;
 
 CREATE SEQUENCE global_seq START WITH 100000;
 

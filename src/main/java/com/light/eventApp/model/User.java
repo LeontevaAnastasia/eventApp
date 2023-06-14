@@ -57,16 +57,25 @@ public class User extends AbstractBaseEntity {
     private Set<Role> roles;
 
 
-    @ManyToMany(cascade = CascadeType.ALL)
+    /* @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "user_event",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "event_id", referencedColumnName = "id"))
     private Set<Event> eventsSet;
 
+     */
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Set<Contract> contractsSet;
 
-    private CurrentStatus status;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "creator")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    private Set<Event> createdEvents;
+
+
+    @OneToMany(mappedBy = "user")
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    Set<ApplyStatus> statuses;
 
 }

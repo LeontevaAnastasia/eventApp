@@ -38,7 +38,7 @@ public class Contract extends AbstractBaseEntity {
     private LocalDate endDate;
 
     @Enumerated(value = EnumType.STRING)
-    @Column(name = "status", columnDefinition = "SENT")
+    @Column(name = "status")
     private CurrentStatus status;
 
     @ManyToOne(fetch = FetchType.EAGER)
