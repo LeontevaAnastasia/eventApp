@@ -1,6 +1,5 @@
 package com.light.eventApp.web.event;
 
-import com.light.eventApp.model.ApplyStatus;
 import com.light.eventApp.model.Event;
 import com.light.eventApp.model.User;
 import com.light.eventApp.service.EventService;

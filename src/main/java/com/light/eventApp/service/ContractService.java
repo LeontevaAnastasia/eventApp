@@ -20,6 +20,7 @@ public class ContractService {
     private final UserRepository userRepository;
 
     public Contract applyContract(Contract contract, Long userId) {
+
         return saveContractApplying(contract, userId);
     }
 
@@ -37,14 +38,17 @@ public class ContractService {
     }
 
     public void processContract (Long id, String status) {
-
-        Contract contract = checkNotFoundWithId(contractRepository.findById(id), id);
-            if(!(contract.getStatus().equals(CurrentStatus.APPLY))) {
+        if (CurrentStatus.valueOf(status).equals(CurrentStatus.ACCEPTED) || (CurrentStatus.valueOf(status).equals(CurrentStatus.REJECTED))) {
+            Contract contract = checkNotFoundWithId(contractRepository.findById(id), id);
+            if (!(contract.getStatus().equals(CurrentStatus.APPLY))) {
                 throw new IncorrectUpdateException();
             } else {
                 contract.setStatus(CurrentStatus.valueOf(status));
                 contractRepository.save(contract);
             }
+        } else  throw new IncorrectUpdateException();
     }
+
+
 
 }

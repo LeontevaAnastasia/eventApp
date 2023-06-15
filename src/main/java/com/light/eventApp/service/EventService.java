@@ -58,6 +58,7 @@ public class EventService {
     }
 
    public void processEventApplying (Long id, Long userId, String status) {
+
         ApplyStatus applyStatus = applyStatusRepository.getById(userId, id).orElse(null);
         if (applyStatus == null || (!(applyStatus.getCurrentStatus().equals(CurrentStatus.APPLY))) ) {
             throw new IncorrectUpdateException();

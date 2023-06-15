@@ -11,6 +11,7 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @Setter
@@ -47,7 +48,13 @@ public class Contract extends AbstractBaseEntity {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-
-
+    public Contract(Long id, String details, String content, LocalDate dateOfSigning, LocalDate endDate, User user) {
+        super(id);
+        this.details = details;
+        this.content = content;
+        this.dateOfSigning = dateOfSigning;
+        this.endDate = endDate;
+        this.user = user;
+    }
 
 }
