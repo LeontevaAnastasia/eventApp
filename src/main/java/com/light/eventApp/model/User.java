@@ -7,10 +7,7 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -24,7 +21,7 @@ import java.util.Set;
 public class User extends AbstractBaseEntity {
 
     @Column(name = "name")
-    @Size(min =1, max = 128)
+    @Size(min=1, max = 128)
     private String name;
 
     @Column(name = "email")
@@ -40,7 +37,8 @@ public class User extends AbstractBaseEntity {
     private String password;
 
     @Column(name = "age")
-    @Size(min = 14, max = 100)
+    @Min(1)
+    @NotNull
     private int age;
 
     @Column(name = "enabled", nullable = false, columnDefinition = "bool default true")

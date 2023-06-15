@@ -26,4 +26,7 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     @Query("delete from Event e where e.id=:id and e.creator.id=:userId")
     Long delete(@Param("id") Long id, @Param("userId") Long userId );
 
+    @Query("select e from Event e where e.id=:id and e.creator.id=:userId")
+    Optional<Event> getEventById(@Param("id") Long id, @Param("userId") Long userId);
+
 }

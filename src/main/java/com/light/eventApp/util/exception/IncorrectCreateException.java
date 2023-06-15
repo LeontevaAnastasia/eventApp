@@ -8,6 +8,6 @@ import static org.springframework.boot.web.error.ErrorAttributeOptions.Include.M
 public class IncorrectCreateException extends AppException{
     public IncorrectCreateException(String message) {
 
-        super(HttpStatus.BAD_REQUEST, message, ErrorAttributeOptions.of(MESSAGE));;
+        super(HttpStatus.BAD_REQUEST, message, ErrorAttributeOptions.of(MESSAGE));
     }
 }

@@ -21,11 +21,11 @@ import static com.light.eventApp.util.ValidationUtil.checkNew;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping(value="/eventApp/profile", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value="/eventApp", produces = MediaType.APPLICATION_JSON_VALUE)
 public class ProfileRestController {
 
     private final UserService userService;
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value ="/profile", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<User> register(@Valid @RequestBody UserTo userTo) {
         checkNew(userTo);
@@ -37,7 +37,7 @@ public class ProfileRestController {
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
 
-    @GetMapping()
+    @GetMapping(value ="/profile")
     public User get(@AuthenticationPrincipal AuthorizedUser authUser) {
         return userService.get(authUser.getId());
     }
@@ -47,10 +47,15 @@ public class ProfileRestController {
         userService.delete(authUser.getId());
     }
 
-    @PutMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value ="/profile", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@Valid @RequestBody UserTo userTo, @AuthenticationPrincipal AuthorizedUser authUser) {
         assureIdConsistent(userTo, authUser.getId());
         userService.update(userTo);
+    }
+
+    @GetMapping(value ="/admin/profile")
+    public User getAdmin(@AuthenticationPrincipal AuthorizedUser authUser) {
+        return userService.get(authUser.getId());
     }
 }

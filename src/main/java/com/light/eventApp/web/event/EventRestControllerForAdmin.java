@@ -15,7 +15,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 
+import static com.light.eventApp.util.ValidationUtil.assureIdConsistent;
 import static com.light.eventApp.util.ValidationUtil.checkNew;
 
 @RestController
@@ -28,7 +30,6 @@ public class EventRestControllerForAdmin {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Event> create(@RequestBody EventTo eventTo) {
-
         Long userId = SecurityUtil.authUserId();
         User user= userService.get(userId);
         Event event = EventUtil.createNewFromTo(eventTo,user);
@@ -42,5 +43,30 @@ public class EventRestControllerForAdmin {
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
 
+    @GetMapping
+    public List<Event> getAll() {
+        Long userId = SecurityUtil.authUserId();
+        return eventService.getAllByCreator(userId);
+    }
+
+    @GetMapping("/{id}/participants")
+    public List<Event> getAllParticipants(@PathVariable Long id) {
+        return eventService.getAllParticipants(id);
+    }
+
+    @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Long id) {
+        Long userId = SecurityUtil.authUserId();
+        eventService.delete(id, userId);
+    }
+
+    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void update(@RequestBody EventTo eventTo, @PathVariable Long id) {
+        Long userId = SecurityUtil.authUserId();
+        assureIdConsistent(eventTo, id);
+        eventService.update(EventUtil.updateFromTo((eventService.get(id, userId)) ,eventTo) , userId);
+    }
 
 }

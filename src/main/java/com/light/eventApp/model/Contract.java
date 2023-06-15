@@ -39,7 +39,7 @@ public class Contract extends AbstractBaseEntity {
     private LocalDate endDate;
 
     @Enumerated(value = EnumType.STRING)
-    @Column(name = "status", columnDefinition = "")
+    @Column(name = "status", columnDefinition = "APPLY")
     private CurrentStatus status;
 
     @JsonBackReference

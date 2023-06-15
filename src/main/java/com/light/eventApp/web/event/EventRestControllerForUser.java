@@ -1,7 +1,11 @@
 package com.light.eventApp.web.event;
 
+import com.light.eventApp.model.ApplyStatus;
 import com.light.eventApp.model.Event;
+import com.light.eventApp.model.UserEvent;
+import com.light.eventApp.repository.EventRepository;
 import com.light.eventApp.service.EventService;
+import com.light.eventApp.service.UserService;
 import com.light.eventApp.util.SecurityUtil;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,6 +20,8 @@ import java.util.List;
 public class EventRestControllerForUser {
 
     private final EventService eventService;
+    private final UserService userService;
+    private final EventRepository eventRepository;
 
     @GetMapping
     public List<Event> getAll() {
@@ -26,7 +32,14 @@ public class EventRestControllerForUser {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void applyForEvent(@PathVariable Long id){
         Long userId = SecurityUtil.authUserId();
-        eventService.applyForEvent(userId, id);
+        ApplyStatus applyStatus = new ApplyStatus();
+        UserEvent userEvent = new UserEvent();
+        applyStatus.setUser(userService.get(userId));
+        applyStatus.setEvent(eventRepository.getById(id));
+        userEvent.setEventId(id);
+        userEvent.setUserId(userId);
+        applyStatus.setId(userEvent);
+        eventService.applyForEvent(applyStatus);
 
     }
 
