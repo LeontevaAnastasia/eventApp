@@ -6,6 +6,7 @@ import com.light.eventApp.repository.ContractRepository;
 import com.light.eventApp.repository.EventRepository;
 import com.light.eventApp.repository.UserRepository;
 import com.light.eventApp.util.exception.IncorrectCreateException;
+import com.light.eventApp.util.exception.IncorrectUpdateException;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -39,7 +40,7 @@ public class EventService {
         event.setCreator(checkNotFoundWithId(userRepository.getUserById(userId),userId));
         return eventRepository.save(event);
     }
-    //principal
+
     public Event get(Long id, Long userId) {
         return checkNotFoundWithId(eventRepository.getEventById(id, userId), id);
     }
@@ -56,42 +57,33 @@ public class EventService {
         }
     }
 
-
-    //for principal
-   /* public void processEventApplying (Long id, Long userId, String status) {
-
-        ApplyStatus applyStatus = checkNotFoundWithId(applyStatusRepository.getById(userId, id), id);
-        if (!(applyStatus.getCurrentStatus().equals(CurrentStatus.APPLY))) {
+   public void processEventApplying (Long id, Long userId, String status) {
+        ApplyStatus applyStatus = applyStatusRepository.getById(userId, id).orElse(null);
+        if (applyStatus == null || (!(applyStatus.getCurrentStatus().equals(CurrentStatus.APPLY))) ) {
             throw new IncorrectUpdateException();
         } else {
-            applyStatusRepository.save(userId,id, status);
+            applyStatus.setCurrentStatus(CurrentStatus.valueOf(status));
+            applyStatusRepository.save(applyStatus);
         }
     }
 
-    */
 
-//for participant
     public List<Event> getAll() {
         return eventRepository.findAll();
     }
 
-    // for participant
     public List<Event> getAllByCreator(Long userId) {
         return checkNotFoundWithId(eventRepository.getAllByCreator(userId), userId);
     }
 
-    //for participant
-    public List<Event> getAllParticipants(Long id) {
-        return checkNotFoundWithId(eventRepository.getAllParticipants(id), id);
+    public List<User> getAllParticipants(Long id) {
+        return checkNotFoundWithId(applyStatusRepository.getAllParticipants(id,CurrentStatus.ACCEPTED), id);
     }
 
-
-    //for principal
     public void delete(Long id, Long userId) {
         checkNotFoundWithId(eventRepository.delete(id, userId), id);
     }
 
-    //for principal
     public void update(Event event, Long userId) {
         checkNotFoundWithId(saveEvent(event, userId), event.getId());
     }

@@ -1,5 +1,6 @@
 package com.light.eventApp.repository;
 
+import com.light.eventApp.model.CurrentStatus;
 import com.light.eventApp.model.Event;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
@@ -17,9 +18,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
 
     @Query("select e from Event e where e.creator.id=:userId")
     Optional<List<Event>> getAllByCreator(@Param("userId") Long userId);
-
-    @Query("select a from ApplyStatus a where a.event.id=:id and a.currentStatus ='ACCEPTED'")
-    Optional<List<Event>> getAllParticipants(@Param("id") Long id);
 
     @Transactional
     @Modifying

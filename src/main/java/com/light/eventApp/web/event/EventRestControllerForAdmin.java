@@ -1,5 +1,6 @@
 package com.light.eventApp.web.event;
 
+import com.light.eventApp.model.ApplyStatus;
 import com.light.eventApp.model.Event;
 import com.light.eventApp.model.User;
 import com.light.eventApp.service.EventService;
@@ -27,6 +28,7 @@ public class EventRestControllerForAdmin {
 
     private final EventService eventService;
     private final UserService userService;
+
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Event> create(@RequestBody EventTo eventTo) {
@@ -43,6 +45,12 @@ public class EventRestControllerForAdmin {
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
 
+    @PatchMapping()
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void processApp(@RequestParam Long id,@RequestParam Long userId, @RequestParam String status) {
+        eventService.processEventApplying(id, userId,status);
+    }
+
     @GetMapping
     public List<Event> getAll() {
         Long userId = SecurityUtil.authUserId();
@@ -50,7 +58,7 @@ public class EventRestControllerForAdmin {
     }
 
     @GetMapping("/{id}/participants")
-    public List<Event> getAllParticipants(@PathVariable Long id) {
+    public List<User> getAllParticipants(@PathVariable Long id) {
         return eventService.getAllParticipants(id);
     }
 
