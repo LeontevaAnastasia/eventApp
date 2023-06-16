@@ -40,6 +40,7 @@ password: password
 
 
 <h3>Swagger: </h3>
+
 http://localhost:8080/swagger-ui/index.html?configUrl=/v3/api-docs/swagger-config
 
 <h3> Endpoints:</h3>
