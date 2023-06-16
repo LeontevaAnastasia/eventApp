@@ -8,6 +8,8 @@ import com.light.eventApp.to.ContractTo;
 import com.light.eventApp.util.ContractToUtil;
 import com.light.eventApp.util.SecurityUtil;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,9 +28,12 @@ public class ContractRestControllersForAdmin {
    private final ContractService contractService;
    private final UserService userService;
 
+    protected final Logger log = LoggerFactory.getLogger(getClass());
+
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Contract> createContract(@RequestBody ContractTo contractTo) {
+        log.info("Create contract.");
         Long userId = SecurityUtil.authUserId();
         User user= userService.get(userId);
         Contract contract = ContractToUtil.createNewFromTo(contractTo,user);
@@ -40,9 +45,11 @@ public class ContractRestControllersForAdmin {
         return ResponseEntity.created(uriOfNewResource).body(created);
     }
 
-    @GetMapping
+    @GetMapping("/{id}")
     public Contract get(@PathVariable Long id) {
+        log.info("Get contract by id {}.", id);
         Long userId = SecurityUtil.authUserId();
+
         return contractService.get(id, userId);
     }
 }

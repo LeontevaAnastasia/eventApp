@@ -28,7 +28,7 @@ public class EventService {
     public Event create(Event event, Long userId) {
         LocalDate currentDate = LocalDate.now();
         Optional<Contract> contract = contractRepository.getContractByUserId(userId, currentDate);
-        if (contract.isPresent()) {
+        if (contract.isPresent() && contract.get().getStatus().equals(CurrentStatus.ACCEPTED)) {
             return saveEvent(event, userId);
         } else throw new IncorrectCreateException("No valid contract");
     }

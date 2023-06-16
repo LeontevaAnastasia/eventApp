@@ -8,6 +8,8 @@ import com.light.eventApp.to.EventTo;
 import com.light.eventApp.util.EventUtil;
 import com.light.eventApp.util.SecurityUtil;
 import lombok.AllArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,10 +29,12 @@ public class EventRestControllerForAdmin {
 
     private final EventService eventService;
     private final UserService userService;
+    protected final Logger log = LoggerFactory.getLogger(getClass());
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<Event> create(@RequestBody EventTo eventTo) {
+        log.info("Create event.");
         Long userId = SecurityUtil.authUserId();
         User user= userService.get(userId);
         Event event = EventUtil.createNewFromTo(eventTo,user);
@@ -47,23 +51,27 @@ public class EventRestControllerForAdmin {
     @PatchMapping()
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void processApp(@RequestParam Long id,@RequestParam Long userId, @RequestParam String status) {
+        log.info("Change user status");
         eventService.processEventApplying(id, userId,status);
     }
 
     @GetMapping
     public List<Event> getAll() {
+        log.info("Get all events");
         Long userId = SecurityUtil.authUserId();
         return eventService.getAllByCreator(userId);
     }
 
     @GetMapping("/{id}/participants")
     public List<User> getAllParticipants(@PathVariable Long id) {
+        log.info("Get all participants  by event id {}.", id);
         return eventService.getAllParticipants(id);
     }
 
     @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
+        log.info("Delete event with id {}.", id);
         Long userId = SecurityUtil.authUserId();
         eventService.delete(id, userId);
     }
@@ -71,6 +79,7 @@ public class EventRestControllerForAdmin {
     @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@RequestBody EventTo eventTo, @PathVariable Long id) {
+        log.info("Update event with id {}.", id);
         Long userId = SecurityUtil.authUserId();
         assureIdConsistent(eventTo, id);
         eventService.update(EventUtil.updateFromTo((eventService.get(id, userId)) ,eventTo) , userId);
