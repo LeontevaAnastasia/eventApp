@@ -37,15 +37,6 @@ public class UserTo extends AbstractBaseTo implements Serializable {
     @Size(min = 14, max = 100)
     private int age;
 
-    @Enumerated(EnumType.STRING)
-    @CollectionTable(name = "user_roles", joinColumns = @JoinColumn(name = "user_id"),
-            uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "role"}, name = "uk_user_roles")})
-    @Column(name = "role")
-    @ElementCollection(fetch = FetchType.EAGER)
-    @JoinColumn(name = "id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
-    private Set<Role> roles;
-
 
 
     public UserTo(Long id, String name, String email, String password, int age) {

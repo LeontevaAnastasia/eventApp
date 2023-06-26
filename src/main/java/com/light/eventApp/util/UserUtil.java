@@ -9,6 +9,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.time.LocalDate;
 import java.util.Set;
 
+import static com.light.eventApp.config.WebSecurityConfig.PASSWORD_ENCODER;
+
 @UtilityClass
 public class UserUtil {
 
@@ -25,8 +27,8 @@ public class UserUtil {
         return new User(null, userTo.getName(), userTo.getEmail(), userTo.getPassword(), userTo.getAge(), LocalDate.now(), true, roleSet);
     }
 
-    public static User prepareToSave(User user, PasswordEncoder passwordEncoder) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+    public static User prepareToSave(User user) {
+        user.setPassword(PASSWORD_ENCODER.encode(user.getPassword()));
         user.setEmail(user.getEmail());
         return user;
     }

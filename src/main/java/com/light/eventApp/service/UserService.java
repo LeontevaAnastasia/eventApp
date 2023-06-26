@@ -3,7 +3,6 @@ package com.light.eventApp.service;
 import com.light.eventApp.model.Role;
 import com.light.eventApp.model.User;
 import com.light.eventApp.repository.UserRepository;
-import com.light.eventApp.to.UserTo;
 import com.light.eventApp.util.exception.IncorrectUpdateException;
 import com.light.eventApp.util.exception.NotFoundException;
 import lombok.AllArgsConstructor;
@@ -16,7 +15,6 @@ import java.util.Optional;
 import java.util.Set;
 
 import static com.light.eventApp.util.UserUtil.prepareToSave;
-import static com.light.eventApp.util.UserUtil.updateFromTo;
 import static com.light.eventApp.util.ValidationUtil.checkNotFound;
 import static com.light.eventApp.util.ValidationUtil.checkNotFoundWithId;
 
@@ -29,7 +27,7 @@ public class UserService {
 
 
     public User create(User user) {
-        return userRepository.save(user);
+        return userRepository.save(prepareToSave(user));
     }
 
     public User get(Long id) {
@@ -48,9 +46,8 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public void update(UserTo userTo) {
-        User user = get(userTo.getId());
-        prepareAndSave(updateFromTo(user, userTo));
+    public void update(User user) {
+        checkNotFoundWithId(userRepository.save(user), user.getId());
 
     }
 
@@ -86,9 +83,7 @@ public class UserService {
         user.setRoles(roles);
     }
 
-    private User prepareAndSave(User user) {
-        return userRepository.save(prepareToSave(user, passwordEncoder));
-    }
+
 
 
 }

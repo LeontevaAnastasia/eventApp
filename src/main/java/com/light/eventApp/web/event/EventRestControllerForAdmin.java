@@ -1,5 +1,10 @@
 package com.light.eventApp.web.event;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.github.fge.jsonpatch.JsonPatchException;
+import com.github.fge.jsonpatch.mergepatch.JsonMergePatch;
 import com.light.eventApp.model.Event;
 import com.light.eventApp.model.User;
 import com.light.eventApp.service.EventService;
@@ -7,6 +12,7 @@ import com.light.eventApp.service.UserService;
 import com.light.eventApp.to.EventTo;
 import com.light.eventApp.util.EventUtil;
 import com.light.eventApp.util.SecurityUtil;
+import com.light.eventApp.util.exception.NotFoundException;
 import lombok.AllArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,6 +36,8 @@ public class EventRestControllerForAdmin {
     private final EventService eventService;
     private final UserService userService;
     protected final Logger log = LoggerFactory.getLogger(getClass());
+
+    private ObjectMapper objectMapper;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.CREATED)
@@ -76,13 +84,39 @@ public class EventRestControllerForAdmin {
         eventService.delete(id, userId);
     }
 
-    @PutMapping(value = "/{id}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    /*@PutMapping(value = "/{id}/update", consumes = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void update(@RequestBody EventTo eventTo, @PathVariable Long id) {
         log.info("Update event with id {}.", id);
         Long userId = SecurityUtil.authUserId();
         assureIdConsistent(eventTo, id);
         eventService.update(EventUtil.updateFromTo((eventService.get(id, userId)) ,eventTo) , userId);
+    }
+
+     */
+
+    @PatchMapping(path = "/{id}/update", consumes = "application/json-patch+json")
+    public ResponseEntity<EventTo> update(@PathVariable Long id, @RequestBody JsonMergePatch patch) {
+
+        try {
+            Long userId = SecurityUtil.authUserId();
+            log.info("Update event with id {} and userId {}.", id, userId);
+            Event event = eventService.get(id,userId);
+            EventTo eventTo = EventUtil.asTo(event);
+            EventTo taskPatched = applyPatchToEvent(patch, eventTo);
+            eventService.update(EventUtil.updateFromTo(event,taskPatched), userId);
+            return ResponseEntity.ok(eventTo);
+        } catch (JsonPatchException | JsonProcessingException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        } catch (NotFoundException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
+
+    private EventTo applyPatchToEvent(
+            JsonMergePatch patch, EventTo targetEventTo) throws JsonPatchException, JsonProcessingException {
+        JsonNode patched = patch.apply(objectMapper.convertValue(targetEventTo, JsonNode.class));
+        return objectMapper.treeToValue(patched, EventTo.class);
     }
 
 }

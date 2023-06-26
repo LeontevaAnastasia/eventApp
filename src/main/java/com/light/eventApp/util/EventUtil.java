@@ -21,4 +21,8 @@ public class EventUtil {
         event.setDateTime(eventTo.getDateTime());
         return event;
     }
+
+    public static EventTo asTo(Event event) {
+        return new EventTo(event.getId(),event.getHeader(), event.getDescription(), event.getPrice(), event.getDateTime());
+    }
 }

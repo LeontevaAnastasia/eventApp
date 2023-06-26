@@ -14,6 +14,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -25,9 +26,10 @@ import java.util.Optional;
 @Slf4j
 @AllArgsConstructor
 public class WebSecurityConfig {
-    public static final PasswordEncoder PASSWORD_ENCODER = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
     private final UserRepository userRepository;
+
+    public static final PasswordEncoder PASSWORD_ENCODER = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -47,13 +49,13 @@ public class WebSecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/eventApp/profile").anonymous()
+                .antMatchers("/eventApp/**").authenticated()
                 .antMatchers("/eventApp/principal/**").hasRole(Role.PRINCIPAL.name())
                 .antMatchers("/eventApp/profile/**").hasRole(Role.USER.name())
                 .antMatchers("/eventApp/admin/**").hasRole(Role.ADMIN.name())
-                .antMatchers("/eventApp/**").authenticated()
-                .and().httpBasic()
-                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+
+                .and().formLogin()
+                .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.ALWAYS)
                 .and().csrf().disable();
         return http.build();
     }
