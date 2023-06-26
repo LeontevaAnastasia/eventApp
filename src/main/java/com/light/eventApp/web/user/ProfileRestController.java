@@ -63,15 +63,6 @@ public class ProfileRestController {
         userService.delete(authUser.getId());
     }
 
-    /* @PutMapping(value ="/profile", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@Valid @RequestBody UserTo userTo, @AuthenticationPrincipal AuthorizedUser authUser) {
-        log.info("Update user to {} by user id {}.", userTo, authUser.getId());
-        assureIdConsistent(userTo, authUser.getId());
-        userService.update(userTo);
-    }
-
-     */
 
     @PatchMapping(consumes = "application/json-patch+json")
     public ResponseEntity<UserTo> update(@RequestBody JsonMergePatch patch,

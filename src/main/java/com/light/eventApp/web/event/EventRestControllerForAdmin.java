@@ -84,16 +84,6 @@ public class EventRestControllerForAdmin {
         eventService.delete(id, userId);
     }
 
-    /*@PutMapping(value = "/{id}/update", consumes = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void update(@RequestBody EventTo eventTo, @PathVariable Long id) {
-        log.info("Update event with id {}.", id);
-        Long userId = SecurityUtil.authUserId();
-        assureIdConsistent(eventTo, id);
-        eventService.update(EventUtil.updateFromTo((eventService.get(id, userId)) ,eventTo) , userId);
-    }
-
-     */
 
     @PatchMapping(path = "/{id}/update", consumes = "application/json-patch+json")
     public ResponseEntity<EventTo> update(@PathVariable Long id, @RequestBody JsonMergePatch patch) {
